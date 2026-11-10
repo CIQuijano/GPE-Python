@@ -1,15 +1,14 @@
-import numpy as np                         # Librería de cálculo numérico.
-from scipy.linalg import eigh_tridiagonal  # Del módulo de álgebra lineal scipy.linalg, importa únicamente la función de autovalores para matrices tridiagonales eigh_tridiagonal.
+import numpy as np                         
+from scipy.linalg import eigh_tridiagonal  
 
 def gauss_rule(alpha, beta):                  
-    '''n-point Gauss rule:
-       Aplica el algoritmo de Golub-Welsch para obtener los nodos (autovalores) y pesos (autovectores escalados)
+    '''Algoritmo de Golub-Welsch para obtener los nodos (autovalores) y pesos (autovectores escalados)
        de la cuadratura gaussiana desde la matrix de Jacobi.
     '''
     alpha = np.asarray(alpha, dtype=float)   
     beta = np.asarray(beta, dtype=float)     
 
-    nodes, V = eigh_tridiagonal(alpha, np.sqrt(beta[1:]))         # Compute the autovalues (nodes) and the autovectors (V) 
+    nodes, V = eigh_tridiagonal(alpha, np.sqrt(beta[1:]))          
 
     weights = beta[0] * V[0, :] ** 2  
     return nodes, weights             
@@ -39,8 +38,8 @@ def stieltjes(x, w, n):
     alpha = np.zeros(n)
     beta = np.zeros(n)
 
-    beta[0] = np.sum(w)             # beta_0 = total mass
-    p_prev = np.zeros_like(x)       # p_{-1} = 0
+    beta[0] = np.sum(w)                         # beta_0 = total mass
+    p_prev = np.zeros_like(x)                   # p_{-1} = 0
     p = np.full_like(x, 1 / np.sqrt(beta[0]))
     
     for k in range(n):
