@@ -1,10 +1,10 @@
 """
-Example 2: recurrence coefficients of exp(-x^2)dx by the Stieltjes procedure
+Example: recurrence coefficients of exp(-x^2)dx by the Stieltjes procedure
 on a discretized measure, compared with alpha_k = 0, beta_0 = sqrt(pi), beta_k = k/2.
 
 Usage: 
-    python example2.py                      (n = 20, L = 8, nd = 200)
-    python example2.py --n 40 --L 12 --nd 400
+    python test_stieltjes_hermite.py       (n = 20, L = 8, nd = 200)
+    python test_stieltjes_hermite.py         --n 40 --L 12 --nd 400
 """
 
 import argparse
@@ -12,7 +12,7 @@ import math
 
 import numpy as np 
 
-from quadrature import legendre_rule, stieltjes
+from s01_quadrature import legendre_rule, stieltjes
 
 def discretize(weight, L, nd):
     """Discrete measure approximating weight(x)dx on [-L, L]."""
@@ -38,5 +38,3 @@ if __name__ == "__main__":
 
     print(f"max |alpha_k|        : {np.max(np.abs(alpha)):.1e}")
     print(f"max |beta_k - exact| : {np.max(np.abs(beta - beta_ex)):.1e}")
-
-    

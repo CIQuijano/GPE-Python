@@ -2,16 +2,31 @@ import numpy as np
 from scipy.linalg import eigh_tridiagonal  
 
 def gauss_rule(alpha, beta):                  
-    '''Algoritmo de Golub-Welsch para obtener los nodos (autovalores) y pesos (autovectores escalados)
-       de la cuadratura gaussiana desde la matrix de Jacobi.
+    '''
+    n-point Gauss rule.
+
+    alpha : recurence coefficients alpha_0,...,alpha_{n-1} (n values).
+    beta : recurrence coefficients beta_0,...,beta_{n-1} (n values);
+            beta_0 is the integral of the weight.
+
+    Return (nodes, weights), with the nodes in increasing order.
     '''
     alpha = np.asarray(alpha, dtype=float)   
-    beta = np.asarray(beta, dtype=float)     
+    beta = np.asarray(beta, dtype=float)   
+    n = len(alpha)  
 
-    nodes, V = eigh_tridiagonal(alpha, np.sqrt(beta[1:]))          
+    # Nodes: eigenvalues of the Jacobi matrix (diagonal alpha, off-diagonal sqrt(beta_k)).
+    nodes = eigh_tridiagonal(alpha, np.sqrt(beta[1:]), eigvals_only=True)          
 
-    weights = beta[0] * V[0, :] ** 2  
-    return nodes, weights             
+    # Weights: 1 / sum_k p_k(x_i)^2, with the orthonormal p_k from the recurrence. 
+    p_prev = np.zeros(n)
+    p = np.full(n, 1 / np.sqrt(beta[0]))
+    total = p**2
+    for k in range(n - 1):
+        q = ((nodes - alpha[k]) * p - np.sqrt(beta[k]) * p_prev) / np.sqrt(beta[k + 1])
+        p_prev, p = p, q
+        total += p**2
+    return nodes, 1 / total             
 
 
 def legendre_rule(n, a=-1.0, b=1.0):
